@@ -20,18 +20,16 @@ Whatnot podcast).
 - **Unit tests only:** `pnpm test:unit` (Vitest)
 - **Single unit test:** `pnpm exec vitest run tests/unit/Player.test.tsx`
 - **E2E tests only:** `pnpm test:e2e` (Playwright, auto-starts dev server)
-- **Seed remote DB:** `pnpm db:seed`
-- **Push schema to DB:** `pnpm db:push`
-- **Drizzle Studio:** `pnpm db:studio`
 
 ## Architecture
 
 ### Framework Stack
 
-- **Astro 5** with static output, deployed to Vercel
-- **Preact** for interactive components (player, search, contact form)
+- **Astro 7** with fully static output (no adapter), built to `dist/` and
+  deployed to a self-hosted server (`radio.crssrds.jp`). Audio files are hosted
+  on the same server and referenced from the RSS feed.
+- **Preact** for interactive components (player, search)
 - **Tailwind CSS v4** via Vite plugin
-- **Drizzle ORM** with Turso/libSQL for episode guests and sponsors
 - **Valibot** for config validation
 
 ### Key Configuration
@@ -39,18 +37,18 @@ Whatnot podcast).
 - `starpod.config.ts` — podcast metadata (hosts, platforms, RSS feed URL,
   description). Uses `defineStarpodConfig()` from `src/utils/config.ts` for type
   safety and validation.
-- `astro.config.mjs` — Astro config with Vercel adapter, Preact, and sitemap
-  integrations.
-- `drizzle.config.ts` — Drizzle Kit config for schema push, migrations, and
-  studio.
+- `astro.config.mjs` — Astro config with Preact and sitemap integrations. No
+  server adapter (pure static). Image optimization is disabled via
+  `passthroughImageService()`.
 
 ### Data Flow
 
 Episodes are fetched from the RSS feed at build time via `src/lib/rss.ts`.
-Guest/sponsor data lives in `db/data/` as TypeScript files and is seeded to
-Turso via `db/seed.ts`. The DB schema is in `db/schema.ts` (Drizzle ORM) with
-tables: Episode, Person, HostOrGuest, Sponsor, SponsorForEpisode. The DB
-connection is configured in `db/index.ts`.
+Guest/sponsor data lives in `db/data/` as static TypeScript files (`people.ts`,
+`people-per-episode.ts`, `sponsors.ts`, `sponsors-per-episode.ts`). At build
+time, `src/lib/episode-people.ts` resolves each episode's hosts, guests, and
+sponsors directly from those files — there is no database. (The `db/` directory
+name is historical; it now only holds the static `data/` files.)
 
 ### Source Structure
 
@@ -61,8 +59,8 @@ connection is configured in `db/index.ts`.
   components. The audio player (`src/components/player/`) and search dialog are
   Preact.
 - `src/components/state.ts` — Preact signals for shared player state.
-- `src/lib/` — Core utilities: RSS fetching, image optimization, LLM content
-  generation.
+- `src/lib/` — Core utilities: RSS fetching, LLM content generation, and
+  `episode-people.ts` (resolves hosts/guests/sponsors from `db/data/`).
 - `src/content/transcripts/` — Markdown transcript files named by episode
   number. When one is absent, the site falls back to the transcript referenced
   by the feed's `<podcast:transcript>` tag (fetched/parsed in
@@ -73,8 +71,7 @@ connection is configured in `db/index.ts`.
   island. Note: changing that rehype plugin needs a dev server restart to take
   effect, since Astro's content render cache doesn't reload it on hot-reload.
 - `src/layouts/Layout.astro` — Single shared layout.
-- `db/` — Database schema (`schema.ts`), connection (`index.ts`), seed script
-  (`seed.ts`), and static data files (`data/`).
+- `db/data/` — Static TypeScript data files for episode guests and sponsors.
 
 ### Testing
 
@@ -90,11 +87,9 @@ configured for Preact (`jsxImportSource: "preact"`).
 
 ## Environment Variables
 
-- `DISCORD_WEBHOOK` — Used by the contact form API route
-  (`src/pages/api/contact.ts`) to post to Discord.
-- `ASTRO_DB_REMOTE_URL` — Turso/libSQL database URL (e.g.,
-  `libsql://your-db.turso.io`).
-- `ASTRO_DB_APP_TOKEN` — Authentication token for Turso database.
+- `PUBLIC_GA_ID` — Google Analytics 4 measurement ID (e.g., `G-XXXXXXXXXX`).
+  When set at build time, `src/components/Analytics.astro` injects the GA
+  snippet; when unset, no analytics are emitted.
 - `STANDARD_SITE_DID` — Your ATProto DID for standard.site verification (e.g.,
   `did:plc:abc123`). Find yours at https://bsky.app/settings.
 - `STANDARD_SITE_PUBLICATION_RKEY` — The publication record key returned when

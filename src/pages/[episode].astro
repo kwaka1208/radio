@@ -1,15 +1,5 @@
 ---
 import { getEntry, render } from 'astro:content';
-import { eq } from 'drizzle-orm';
-
-import { createDb } from '../../db';
-import {
-  Episode as DbEpisode,
-  HostOrGuest,
-  Person,
-  Sponsor,
-  SponsorForEpisode
-} from '../../db/schema';
 
 import { Schema } from 'astro-seo-schema';
 
@@ -30,6 +20,7 @@ import {
   type TranscriptParagraph
 } from '../lib/transcript';
 import { getDocumentRkeys } from '../lib/standardSite';
+import { getHostsAndGuests, getSponsors } from '../lib/episode-people';
 import { dasherize } from '../utils/dasherize';
 
 const show = await getShowInfo();
@@ -83,37 +74,8 @@ const playerEpisode = {
 
 const canonicalURL = new URL(`/${episode.episodeSlug}`, Astro.url);
 
-const db = createDb(
-  import.meta.env.ASTRO_DB_REMOTE_URL,
-  import.meta.env.ASTRO_DB_APP_TOKEN
-);
-
-const hostsAndGuests = await db
-  .select({
-    id: Person.id,
-    img: Person.img,
-    isHost: HostOrGuest.isHost,
-    name: Person.name
-  })
-  .from(HostOrGuest)
-  .innerJoin(DbEpisode, eq(HostOrGuest.episodeSlug, DbEpisode.episodeSlug))
-  .innerJoin(Person, eq(HostOrGuest.personId, Person.id))
-  .where(eq(DbEpisode.episodeSlug, episode.episodeSlug));
-
-const sponsors = await db
-  .select({
-    id: Sponsor.id,
-    img: Sponsor.img,
-    name: Sponsor.name,
-    url: Sponsor.url
-  })
-  .from(SponsorForEpisode)
-  .innerJoin(
-    DbEpisode,
-    eq(SponsorForEpisode.episodeSlug, DbEpisode.episodeSlug)
-  )
-  .innerJoin(Sponsor, eq(SponsorForEpisode.sponsorId, Sponsor.id))
-  .where(eq(DbEpisode.episodeSlug, episode.episodeSlug));
+const hostsAndGuests = getHostsAndGuests(episode.episodeSlug);
+const sponsors = getSponsors(episode.episodeSlug);
 
 const title = `${episode.title} - ${show.title} - Episode ${episode.episodeNumber}`;
 

@@ -1,8 +1,11 @@
-import { defineConfig, fontProviders } from 'astro/config';
+import {
+  defineConfig,
+  fontProviders,
+  passthroughImageService
+} from 'astro/config';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import vercel from '@astrojs/vercel';
 import { unified } from '@astrojs/markdown-remark';
 
 import rehypeTranscriptTimestamps from './src/lib/rehype-transcript-timestamps.mjs';
@@ -10,25 +13,6 @@ import rehypeTranscriptTimestamps from './src/lib/rehype-transcript-timestamps.m
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  adapter: vercel({
-    imageService: true,
-    imagesConfig: {
-      formats: ['image/avif'],
-      minimumCacheTTL: 3600,
-      remotePatterns: [
-        {
-          protocol: 'https'
-        },
-        {
-          protocol: 'http'
-        }
-      ],
-      sizes: [160, 320, 640, 1280]
-    },
-    webAnalytics: {
-      enabled: true
-    }
-  }),
   build: {
     inlineStylesheets: 'always'
   },
@@ -58,6 +42,8 @@ export default defineConfig({
     }
   ],
   image: {
+    // Fully static build with no image optimization: emit images as-is.
+    service: passthroughImageService(),
     remotePatterns: [
       {
         protocol: 'https'
@@ -71,7 +57,7 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport'
   },
-  site: 'https://whiskey.fm',
+  site: 'https://radio.crssrds.jp',
   trailingSlash: 'never',
   integrations: [
     preact(),
