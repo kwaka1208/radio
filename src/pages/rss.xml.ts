@@ -26,6 +26,15 @@ export const GET: APIRoute = async ({ site }) => {
   const siteUrl = site!.toString();
   const author = starpodConfig.hosts.map((host) => host.name).join(', ');
 
+  // Apple Podcasts categories (first is the required primary category).
+  const categories = starpodConfig.categories
+    .map(({ category, subcategory }) =>
+      subcategory
+        ? `    <itunes:category text="${escapeXml(category)}">\n      <itunes:category text="${escapeXml(subcategory)}"/>\n    </itunes:category>`
+        : `    <itunes:category text="${escapeXml(category)}"/>`
+    )
+    .join('\n');
+
   const items = episodes
     .map((episode) => {
       const pageUrl = new URL(`/${episode.episodeSlug}`, siteUrl).toString();
@@ -58,13 +67,14 @@ export const GET: APIRoute = async ({ site }) => {
     <language>ja</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <image>
-      <url>${escapeXml(show.image)}</url>
+      <url>${escapeXml(show.itunesImage)}</url>
       <title>${escapeXml(show.title)}</title>
       <link>${escapeXml(siteUrl)}</link>
     </image>
     <itunes:author>${escapeXml(author)}</itunes:author>
     <itunes:summary>${cdata(show.description)}</itunes:summary>
-    <itunes:image href="${escapeXml(show.image)}"/>
+    <itunes:image href="${escapeXml(show.itunesImage)}"/>
+${categories}
     <itunes:explicit>false</itunes:explicit>
 ${items}
   </channel>

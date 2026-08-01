@@ -6,7 +6,10 @@ import starpodConfig from '../../starpod.config';
 export interface Show {
   title: string;
   description: string;
+  /** Site-facing cover art (OGP, header artwork, thumbnail fallback). */
   image: string;
+  /** Podcast cover art for the RSS feed (itunes:image / channel image). */
+  itunesImage: string;
   link: string;
 }
 
@@ -47,6 +50,11 @@ export async function getShowInfo() {
     description: starpodConfig.description,
     // Absolute URL: used in og:image and the RSS feed, which need one.
     image: new URL(starpodConfig.image, site).toString(),
+    // Podcast cover art for the feed; falls back to the site image.
+    itunesImage: new URL(
+      starpodConfig.itunesImage ?? starpodConfig.image,
+      site
+    ).toString(),
     link: site
   };
 

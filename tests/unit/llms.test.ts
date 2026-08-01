@@ -140,12 +140,14 @@ describe('LLM Utilities', () => {
       title: 'Test Podcast',
       description: 'A test podcast description',
       image: 'https://example.com/image.jpg',
+      itunesImage: 'https://example.com/image.jpg',
       link: 'https://example.com'
     };
 
     const mockConfig: StarpodConfig = {
       title: 'Test Show',
       image: '/cover.png',
+      categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [
@@ -223,12 +225,14 @@ describe('LLM Utilities', () => {
       title: 'Test Podcast',
       description: 'A test podcast',
       image: 'https://example.com/image.jpg',
+      itunesImage: 'https://example.com/image.jpg',
       link: 'https://example.com'
     };
 
     const mockConfig: StarpodConfig = {
       title: 'Test Show',
       image: '/cover.png',
+      categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [
@@ -310,6 +314,7 @@ describe('LLM Utilities', () => {
       title: 'Test Podcast',
       description: 'A test podcast',
       image: 'https://example.com/image.jpg',
+      itunesImage: 'https://example.com/image.jpg',
       link: 'https://example.com'
     };
 
@@ -377,12 +382,14 @@ describe('LLM Utilities', () => {
       title: 'Test Podcast',
       description: 'A test podcast',
       image: 'https://example.com/image.jpg',
+      itunesImage: 'https://example.com/image.jpg',
       link: 'https://example.com'
     };
 
     const mockConfig: StarpodConfig = {
       title: 'Test Show',
       image: '/cover.png',
+      categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [
@@ -463,12 +470,14 @@ describe('LLM Utilities', () => {
       title: 'Test Podcast',
       description: 'A test podcast',
       image: 'https://example.com/image.jpg',
+      itunesImage: 'https://example.com/image.jpg',
       link: 'https://example.com'
     };
 
     const mockConfig: StarpodConfig = {
       title: 'Test Show',
       image: '/cover.png',
+      categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [

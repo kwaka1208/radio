@@ -3,10 +3,17 @@ import { defineStarpodConfig } from 'src/utils/config';
 export default defineStarpodConfig({
   // TODO: 番組名・カバー画像・紹介文はご自身の内容に書き換えてください
   title: 'crossradio',
+  // サイト表示用（OGP画像・ヘッダーアートワーク・一覧サムネイルのフォールバック）
   image: '/images/radio.png',
-  blurb: 'ものづくりと学びについて話すラジオ。',
+  // ポッドキャスト配信用のカバーアート（RSSの itunes:image と channel image）。
+  // 未指定なら image を使う。ディレクトリ表示用に大きめの正方形画像を指定する。
+  itunesImage: '/images/radio-3000.png',
+  blurb: 'ITとかAIとか学びについてその時の気分で話します',
   description:
-    'ものづくりと学びについてゆるく話すポッドキャストです。番組の詳しい紹介文はここに書きます。',
+    'ITとかAIとか学びとか、若林の関心のあること、話したいことを徒然なるままに話します',
+  // Apple Podcasts のカテゴリ。先頭がプライマリ（必須）。
+  // カテゴリ名は Apple の正式名称をそのまま指定する。
+  categories: [{ category: 'Technology' }, { category: 'Education' }],
   hosts: [
     {
       name: 'Kenichi Wakabayashi',
@@ -20,8 +27,8 @@ export default defineStarpodConfig({
   ],
   platforms: {
     apple:
-      '',
-    appleIdNumber: '',
+      'https://podcasts.apple.com/us/podcast/crossradio/id6797005458',
+    appleIdNumber: '6797005458',
     // overcast: 'https://overcast.fm/itunes1552776603',
     // pocketCasts: 'https://pca.st/bezzctzj',
     // spotify: 'https://open.spotify.com/show/19jiuHAqzeKnkleQUpZxDf',

@@ -31,9 +31,17 @@ export type StarpodConfig = {
    */
   title: string;
   /**
-   * A URL (or root-relative path) to your show's cover art.
+   * A URL (or root-relative path) to your show's cover art. Used across the
+   * site (OGP image, header artwork, episode-list thumbnail fallback).
    */
   image: string;
+  /**
+   * A URL (or root-relative path) to the podcast cover art used in the RSS
+   * feed (`<itunes:image>` and the channel `<image>`). Podcast directories
+   * (Apple, Spotify, etc.) require a large square image (1400–3000px). When
+   * omitted, `image` is used.
+   */
+  itunesImage?: string;
   /**
    * A very short tagline for your show. Generally, no more than one sentence. Less is more here.
    */
@@ -42,6 +50,13 @@ export type StarpodConfig = {
    * A somewhat longer description of what your show is about. This should still ideally be fairly short, and should usually be 2-4 sentences.
    */
   description: string;
+  /**
+   * Apple Podcasts categories for the show. The first entry is the primary
+   * category (required by Apple). Each entry is a top-level category and an
+   * optional subcategory, emitted as nested `<itunes:category>` tags. Use the
+   * exact category names from Apple's list (e.g. "Technology", "Education").
+   */
+  categories: Array<{ category: string; subcategory?: string }>;
   /**
    * A list of your show's hosts and their info.
    */
