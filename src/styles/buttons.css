@@ -10,7 +10,7 @@
   @apply after:absolute after:-inset-[1px] after:-z-[1] after:rounded-[inherit] after:content-[''];
 
   &:after {
-    @apply bg-gradient-to-br from-[#D8CCFF] to-[#8A63FF] dark:from-[#42C8F3] dark:to-[#B6EDFF];
+    @apply bg-gradient-to-br from-[var(--color-key-soft)] to-[var(--color-key)] dark:from-[#42C8F3] dark:to-[#B6EDFF];
     mask: conic-gradient(
       from calc(var(--from, 0) * 1deg),
       #000 calc(var(--complete) * 1%),

@@ -36,7 +36,7 @@ export const GET: APIRoute = async ({ site }) => {
       <pubDate>${new Date(episode.published).toUTCString()}</pubDate>
       <description>${cdata(episode.description)}</description>
       <content:encoded>${cdata(episode.content)}</content:encoded>
-      <enclosure url="${escapeXml(episode.audio.src)}" type="${escapeXml(episode.audio.type)}" length="${episode.audioBytes ?? 0}"/>
+      <enclosure url="${escapeXml(new URL(episode.audio.src, siteUrl).toString())}" type="${escapeXml(episode.audio.type)}" length="${episode.audioBytes ?? 0}"/>
       <itunes:episode>${episode.episodeNumber}</itunes:episode>
       <itunes:duration>${episode.duration}</itunes:duration>
       <itunes:explicit>false</itunes:explicit>${

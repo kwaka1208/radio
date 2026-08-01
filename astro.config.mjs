@@ -1,14 +1,16 @@
-import {
-  defineConfig,
-  fontProviders,
-  passthroughImageService
-} from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { unified } from '@astrojs/markdown-remark';
 
 import rehypeTranscriptTimestamps from './src/lib/rehype-transcript-timestamps.mjs';
+
+// `astro dev` serves from localhost, so use a localhost `site` there and the
+// production URL for `astro build`. This keeps absolute URLs (canonical,
+// og:image, RSS, sitemap, …) pointing at the host actually serving the page.
+const isDev = process.argv.includes('dev');
+const DEV_PORT = 4321;
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,24 +25,6 @@ export default defineConfig({
   experimental: {
     clientPrerender: true
   },
-  fonts: [
-    {
-      provider: fontProviders.google(),
-      name: 'Inter',
-      cssVariable: '--astro-font-inter',
-      formats: ['woff2'],
-      styles: ['normal'],
-      subsets: ['latin'],
-      weights: ['300 900'],
-      options: {
-        experimental: {
-          variableAxis: {
-            opsz: ['14..32']
-          }
-        }
-      }
-    }
-  ],
   image: {
     // Fully static build with no image optimization: emit images as-is.
     service: passthroughImageService(),
@@ -57,7 +41,8 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport'
   },
-  site: 'https://radio.crssrds.jp',
+  server: { port: DEV_PORT },
+  site: isDev ? `http://localhost:${DEV_PORT}` : 'https://radio.crssrds.jp',
   trailingSlash: 'never',
   integrations: [
     preact(),

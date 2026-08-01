@@ -100,7 +100,11 @@ export async function getAllEpisodes() {
         episodeThumbnail: data.episodeImage,
         published: data.published.getTime(),
         audio: {
-          src: new URL(`/episodes/${data.audio}`, site).toString(),
+          // Root-relative so the on-page player resolves it against whatever
+          // host serves the page (localhost in dev, the site in prod). The RSS
+          // feed / OGP / JSON-LD wrap this with `site` where an absolute URL is
+          // required.
+          src: `/episodes/${data.audio}`,
           type: data.audioType
         },
         audioBytes: data.audioBytes

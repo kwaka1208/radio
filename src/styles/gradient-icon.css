@@ -1,13 +1,14 @@
 @property --gradient-start {
   syntax: '<color>';
   inherits: false;
-  initial-value: oklch(67.65% 0.043 285.21);
+  /* Brand key color (#202f55). @property initial-value can't use var(). */
+  initial-value: #202f55;
 }
 
 @property --gradient-stop {
   syntax: '<color>';
   inherits: false;
-  initial-value: oklch(67.65% 0.043 285.21);
+  initial-value: #202f55;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,8 +36,8 @@
     --gradient-stop 300ms;
 
   &:hover {
-    --gradient-start: oklch(77.32% 0.129 294.81);
-    --gradient-stop: oklch(67.59% 0.18851878808119876 292.4954219580293);
+    --gradient-start: #34477a;
+    --gradient-stop: #202f55;
     @media (prefers-color-scheme: dark) {
       --gradient-start: oklch(88.52% 0.079 220.53);
       --gradient-stop: oklch(78.86% 0.125 223.67);

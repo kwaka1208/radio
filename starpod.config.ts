@@ -2,8 +2,8 @@ import { defineStarpodConfig } from 'src/utils/config';
 
 export default defineStarpodConfig({
   // TODO: 番組名・カバー画像・紹介文はご自身の内容に書き換えてください
-  title: 'crssrds radio',
-  image: '/android-chrome-384x384.png',
+  title: 'crossradio',
+  image: '/images/radio.png',
   blurb: 'ものづくりと学びについて話すラジオ。',
   description:
     'ものづくりと学びについてゆるく話すポッドキャストです。番組の詳しい紹介文はここに書きます。',
@@ -11,8 +11,8 @@ export default defineStarpodConfig({
     {
       name: 'Kenichi Wakabayashi',
       bio: '',
-      // TODO: src/img/people/ にご自身の写真を置いてファイル名を指定してください
-      img: 'avatar-light.png',
+      // TODO: src/images/people/ にご自身の写真を置いてファイル名を指定してください
+      img: 'me.jpg',
       github: 'https://github.com/kwaka1208',
       twitter: 'https://x.com/waka1208',
       website: 'https://crssrds.jp'

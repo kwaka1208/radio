@@ -76,7 +76,7 @@ const playerEpisode = {
   title: episode.title
 };
 
-const canonicalURL = new URL(`/${episode.episodeSlug}`, Astro.url);
+const canonicalURL = new URL(`/${episode.episodeSlug}`, Astro.site);
 
 const title = `${episode.title} - ${show.title} - Episode ${episode.episodeNumber}`;
 
@@ -110,7 +110,9 @@ const documentLinkTag =
       duration: `PT${Math.floor(episode.duration / 60)}M${episode.duration % 60}S`,
       associatedMedia: {
         '@type': 'MediaObject',
-        contentUrl: episode.audio?.src,
+        contentUrl: episode.audio?.src
+          ? new URL(episode.audio.src, Astro.site).toString()
+          : undefined,
         encodingFormat: episode.audio?.type || 'audio/mpeg'
       },
       partOfSeries: {
@@ -124,7 +126,12 @@ const documentLinkTag =
   {documentLinkTag && <Fragment slot="head" set:html={documentLinkTag} />}
 
   <!-- Enhanced Open Graph tags -->
-  <meta slot="head" property="og:audio" content={episode.audio?.src} />
+  <meta
+    slot="head"
+    property="og:audio"
+    content={episode.audio?.src &&
+      new URL(episode.audio.src, Astro.site).toString()}
+  />
   <meta
     slot="head"
     property="article:published_time"
@@ -174,7 +181,7 @@ const documentLinkTag =
         <h3 class="section-heading-underlined mt-16 mb-8">Show Notes</h3>
 
         <div
-          class="prose prose-neutral dark:prose-invert mb-5 [&>h2]:mt-12 [&>h2]:flex [&>h2]:items-center [&>h2]:font-mono [&>h2]:text-sm [&>h2]:leading-7 [&>h2]:font-medium [&>h2]:text-slate-900 [&>h2]:before:mr-3 [&>h2]:before:h-3 [&>h2]:before:w-1.5 [&>h2]:before:rounded-r-full [&>h2]:before:bg-cyan-200 [&>h2:nth-of-type(3n)]:before:bg-violet-200 [&>h2:nth-of-type(3n+2)]:before:bg-indigo-200 [&>ul]:mt-6 [&>ul]:pl-5 [&_li>p]:m-0"
+          class="prose prose-neutral dark:prose-invert mb-5 [&_li>p]:m-0 [&>h2]:mt-12 [&>h2]:flex [&>h2]:items-center [&>h2]:font-mono [&>h2]:text-sm [&>h2]:leading-7 [&>h2]:font-medium [&>h2]:text-slate-900 [&>h2]:before:mr-3 [&>h2]:before:h-3 [&>h2]:before:w-1.5 [&>h2]:before:rounded-r-full [&>h2]:before:bg-cyan-200 [&>h2:nth-of-type(3n)]:before:bg-violet-200 [&>h2:nth-of-type(3n+2)]:before:bg-indigo-200 [&>ul]:mt-6 [&>ul]:pl-5"
         >
           <Fragment set:html={episode.content} />
         </div>
@@ -211,19 +218,17 @@ const documentLinkTag =
                   }
                 }}
               />
-              {
-                Transcript ? (
-                  <MarkdownTranscript client:load episode={playerEpisode}>
-                    <Transcript />
-                  </MarkdownTranscript>
-                ) : (
-                  <RssTranscript
-                    client:load
-                    episode={playerEpisode}
-                    paragraphs={rssTranscript!}
-                  />
-                )
-              }
+              {Transcript ? (
+                <MarkdownTranscript client:load episode={playerEpisode}>
+                  <Transcript />
+                </MarkdownTranscript>
+              ) : (
+                <RssTranscript
+                  client:load
+                  episode={playerEpisode}
+                  paragraphs={rssTranscript!}
+                />
+              )}
 
               <button
                 class="btn mt-4"
@@ -240,7 +245,7 @@ const documentLinkTag =
               </div>
 
               <p class="text-light-text-heading py-10 text-lg font-bold dark:text-white">
-                No transcript available for this episode.
+                このエピソードに文字起こしはありません
               </p>
             </div>
           )

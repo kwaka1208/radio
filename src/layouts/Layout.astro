@@ -1,5 +1,4 @@
 ---
-import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import { Schema } from 'astro-seo-schema';
 
@@ -59,15 +58,30 @@ const description = Astro.props.description ?? starpodConfig.description;
     }
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-    <meta name="msapplication-TileColor" content="#da532c" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#202f55" />
+    <meta name="msapplication-TileColor" content="#202f55" />
+    <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
     <meta
       name="theme-color"
-      content="#ffffff"
+      content="#202f55"
       media="(prefers-color-scheme: light)"
     />
     <meta
@@ -94,8 +108,6 @@ const description = Astro.props.description ?? starpodConfig.description;
     <meta property="og:site_name" content={show.title} />
 
     <link rel="preload" as="image" href={show.image} />
-
-    <Font cssVariable="--astro-font-inter" preload />
 
     <Schema
       slot="head"
@@ -127,7 +139,7 @@ const description = Astro.props.description ?? starpodConfig.description;
     <ClientRouter />
   </head>
   <body
-    class="font-inter text-light-text-body dark:bg-dark-background dark:text-dark-text-body antialiased"
+    class="font-jp text-light-text-body dark:bg-dark-background dark:text-dark-text-body antialiased"
   >
     <header
       class="custom-scrollbar lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-112 lg:items-start lg:overflow-y-auto xl:w-120"
