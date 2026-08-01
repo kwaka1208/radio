@@ -144,6 +144,8 @@ describe('LLM Utilities', () => {
     };
 
     const mockConfig: StarpodConfig = {
+      title: 'Test Show',
+      image: '/cover.png',
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [
@@ -225,6 +227,8 @@ describe('LLM Utilities', () => {
     };
 
     const mockConfig: StarpodConfig = {
+      title: 'Test Show',
+      image: '/cover.png',
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [
@@ -377,6 +381,8 @@ describe('LLM Utilities', () => {
     };
 
     const mockConfig: StarpodConfig = {
+      title: 'Test Show',
+      image: '/cover.png',
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [
@@ -461,6 +467,8 @@ describe('LLM Utilities', () => {
     };
 
     const mockConfig: StarpodConfig = {
+      title: 'Test Show',
+      image: '/cover.png',
       blurb: 'Test blurb',
       description: 'Test description',
       hosts: [

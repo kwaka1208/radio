@@ -15,8 +15,6 @@
     "lint:fix": "eslint . --fix",
     "preview": "astro preview",
     "start": "astro dev",
-    "publish:episodes": "tsx scripts/publish-episodes.ts",
-    "publish:episodes:backfill": "tsx scripts/publish-episodes.ts --backfill",
     "test": "concurrently \"pnpm:test:*(!fix)\" --names \"test:\"",
     "test:e2e": "pnpm exec playwright test",
     "test:unit": "vitest"
@@ -30,9 +28,7 @@
     "astro-seo-schema": "^5.2.0",
     "atropos": "^2.0.2",
     "preact": "^10.29.2",
-    "rss-to-json": "^2.1.1",
-    "schema-dts": "^1.1.5",
-    "valibot": "^1.4.1"
+    "schema-dts": "^1.1.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

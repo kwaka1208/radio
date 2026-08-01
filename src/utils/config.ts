@@ -27,6 +27,14 @@ export type Host = {
 
 export type StarpodConfig = {
   /**
+   * The name of your show. Used across the site and as the RSS channel title.
+   */
+  title: string;
+  /**
+   * A URL (or root-relative path) to your show's cover art.
+   */
+  image: string;
+  /**
    * A very short tagline for your show. Generally, no more than one sentence. Less is more here.
    */
   blurb: string;

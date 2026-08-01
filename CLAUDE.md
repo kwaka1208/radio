@@ -3,12 +3,13 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with
 code in this repository.
 
-## What is Starpod?
+## What is this site?
 
-Starpod is an open-source Astro-based podcast website generator. It creates a
-full podcast site from an RSS feed and a `starpod.config.ts` configuration file.
-The reference deployment is [whiskey.fm](https://whiskey.fm) (Whiskey Web and
-Whatnot podcast).
+A podcast website (originally based on the Starpod generator) for
+`radio.crssrds.jp`. Episodes are authored locally as one markdown file each in
+`src/content/episodes/`, and the site generates both the episode pages and the
+podcast RSS feed (`/rss.xml`) from them. Show-level metadata lives in
+`starpod.config.ts`.
 
 ## Commands
 
@@ -43,12 +44,16 @@ Whatnot podcast).
 
 ### Data Flow
 
-Episodes are fetched from the RSS feed at build time via `src/lib/rss.ts`.
-Guest/sponsor data lives in `db/data/` as static TypeScript files (`people.ts`,
-`people-per-episode.ts`, `sponsors.ts`, `sponsors-per-episode.ts`). At build
-time, `src/lib/episode-people.ts` resolves each episode's hosts, guests, and
-sponsors directly from those files — there is no database. (The `db/` directory
-name is historical; it now only holds the static `data/` files.)
+Episodes are authored as markdown files in `src/content/episodes/` (the
+`episodes` content collection, schema in `src/content.config.ts`). Frontmatter
+holds title, episodeNumber, published date, audio filename (under `/episodes/`
+on the server), duration (seconds), description, and optional slug/artwork;
+the body is the show notes. `src/lib/rss.ts` exposes `getAllEpisodes()` /
+`getShowInfo()` built from that collection plus `starpod.config.ts`, and
+`src/pages/rss.xml.ts` generates the podcast RSS feed (`/rss.xml`, with
+`<enclosure>` and `<itunes:*>` tags) from the same data. Audio files are NOT
+in the repo — they are uploaded to the server's `dist/episodes/` directory,
+which `make release` protects from deletion.
 
 ### Source Structure
 
@@ -61,17 +66,16 @@ name is historical; it now only holds the static `data/` files.)
 - `src/components/state.ts` — Preact signals for shared player state.
 - `src/lib/` — Core utilities: RSS fetching, LLM content generation, and
   `episode-people.ts` (resolves hosts/guests/sponsors from `db/data/`).
+- `src/content/episodes/` — One markdown file per episode (see Data Flow).
 - `src/content/transcripts/` — Markdown transcript files named by episode
-  number. When one is absent, the site falls back to the transcript referenced
-  by the feed's `<podcast:transcript>` tag (fetched/parsed in
-  `src/lib/transcript.ts`). Both sources render with clickable timestamps that
-  seek the player: RSS paragraphs via the `episode/Transcript` island, and
-  markdown `[HH:MM:SS]` timestamps via the `rehype-transcript-timestamps`
-  plugin (registered in `astro.config.mjs`) plus the `episode/MarkdownTranscript`
-  island. Note: changing that rehype plugin needs a dev server restart to take
-  effect, since Astro's content render cache doesn't reload it on hot-reload.
+  number; when present, they render on the episode page with clickable
+  `[HH:MM:SS]` timestamps that seek the player, via the
+  `rehype-transcript-timestamps` plugin (registered in `astro.config.mjs`)
+  plus the `episode/MarkdownTranscript` island. Note: changing that rehype
+  plugin needs a dev server restart to take effect, since Astro's content
+  render cache doesn't reload it on hot-reload. (An unused RSS-transcript
+  fallback from the feed-driven era remains in `src/lib/transcript.ts`.)
 - `src/layouts/Layout.astro` — Single shared layout.
-- `db/data/` — Static TypeScript data files for episode guests and sponsors.
 
 ### Testing
 
@@ -91,12 +95,12 @@ configured for Preact (`jsxImportSource: "preact"`).
   When set at build time, `src/components/Analytics.astro` injects the GA
   snippet; when unset, no analytics are emitted.
 - `STANDARD_SITE_DID` — Your ATProto DID for standard.site verification (e.g.,
-  `did:plc:abc123`). Find yours at https://bsky.app/settings.
-- `STANDARD_SITE_PUBLICATION_RKEY` — The publication record key returned when
-  creating a publication via `scripts/create-publication.ts`.
-- `ATPROTO_HANDLE` — Your Bluesky handle (e.g., `you.bsky.social`) for
-  publishing episodes to ATProto.
-- `ATPROTO_APP_PASSWORD` — App password for ATProto API access. Create at
-  https://bsky.app/settings/app-passwords.
-- `STANDARD_SITE_URL` — Your podcast website URL (e.g., `https://whiskey.fm`)
-  used as the publication site when publishing documents.
+  `did:plc:abc123`). Find yours at https://bsky.app/settings. Used by the
+  in-site verification code (`src/lib/standardSite.ts`, the `.well-known`
+  publication endpoint, and episode pages).
+- `STANDARD_SITE_PUBLICATION_RKEY` — The standard.site publication record key,
+  emitted by the `.well-known/site.standard.publication` endpoint.
+
+(The ATProto episode-publishing scripts and their `ATPROTO_*` / `STANDARD_SITE_URL`
+variables were removed; the site still emits standard.site verification metadata
+when the two variables above are set.)

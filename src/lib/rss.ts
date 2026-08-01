@@ -1,18 +1,6 @@
-import { htmlToText } from 'html-to-text';
-import parseFeed from 'rss-to-json';
-import {
-  array,
-  number,
-  object,
-  optional,
-  parse,
-  string,
-  union
-} from 'valibot';
+import { getCollection } from 'astro:content';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 
-import { optimizeImage } from './optimize-episode-image';
-import { dasherize } from '../utils/dasherize';
-import { truncate } from '../utils/truncate';
 import starpodConfig from '../../starpod.config';
 
 export interface Show {
@@ -37,41 +25,15 @@ export interface Episode {
     src: string;
     type: string;
   };
+  /** Size of the audio file in bytes, for the RSS enclosure. */
+  audioBytes?: number;
   // A transcript referenced by the feed's `<podcast:transcript>` tag, if any.
-  // Used as a fallback when no explicit markdown transcript is provided for the
-  // episode.
+  // Unused now that episodes are authored locally; kept for API compatibility.
   transcriptUrl?: string;
   transcriptType?: string;
 }
 
-// A single `<podcast:transcript>` entry from the RSS feed.
-const TranscriptSchema = object({
-  url: string(),
-  type: optional(string()),
-  language: optional(string()),
-  rel: optional(string())
-});
-
-// A feed may list zero, one, or several transcripts per episode. Prefer a JSON
-// transcript (Flightcast's format), then VTT, then whatever comes first.
-function pickTranscript(
-  transcript:
-    | { url: string; type?: string }
-    | Array<{ url: string; type?: string }>
-    | undefined
-) {
-  if (!transcript) {
-    return undefined;
-  }
-
-  const list = Array.isArray(transcript) ? transcript : [transcript];
-
-  return (
-    list.find((t) => t.type?.toLowerCase().includes('json')) ??
-    list.find((t) => t.type?.toLowerCase().includes('vtt')) ??
-    list[0]
-  );
-}
+const site = import.meta.env.SITE;
 
 let showInfoCache: Show | null = null;
 
@@ -80,102 +42,74 @@ export async function getShowInfo() {
     return showInfoCache;
   }
 
-  // @ts-expect-error
-  const showInfo = (await parseFeed.parse(starpodConfig.rssFeed)) as Show;
-  showInfo.image = (await optimizeImage(showInfo.image, {
-    height: 640,
-    width: 640
-  })) as string;
+  const showInfo: Show = {
+    title: starpodConfig.title,
+    description: starpodConfig.description,
+    // Absolute URL: used in og:image and the RSS feed, which need one.
+    image: new URL(starpodConfig.image, site).toString(),
+    link: site
+  };
 
   showInfoCache = showInfo;
   return showInfo;
 }
 
+let markdownProcessorPromise: ReturnType<
+  typeof createMarkdownProcessor
+> | null = null;
+
+function getMarkdownProcessor() {
+  markdownProcessorPromise ??= createMarkdownProcessor();
+  return markdownProcessorPromise;
+}
+
 let episodesCache: Array<Episode> | null = null;
 
+// Episodes are authored as markdown files in `src/content/episodes/` and the
+// RSS feed is generated from them (src/pages/rss.xml.ts) — not the other way
+// around.
 export async function getAllEpisodes() {
   if (episodesCache) {
     return episodesCache;
   }
-  let FeedSchema = object({
-    items: array(
-      object({
-        id: string(),
-        title: string(),
-        published: number(),
-        description: string(),
-        content_encoded: optional(string()),
-        podcast_transcript: optional(
-          union([TranscriptSchema, array(TranscriptSchema)])
-        ),
-        itunes_duration: number(),
-        itunes_episode: optional(number()),
-        itunes_episodeType: string(),
-        itunes_image: optional(object({ href: optional(string()) })),
-        // A feed may list several enclosures (e.g. the audio file plus a
-        // generated cover image); the image enclosure has no `type`.
-        enclosures: array(
-          object({
-            url: string(),
-            type: optional(string())
-          })
-        )
-      })
-    )
-  });
 
-  // @ts-expect-error
-  let feed = (await parseFeed.parse(starpodConfig.rssFeed)) as Show;
-  let items = parse(FeedSchema, feed).items;
-
-  let episodes: Array<Episode> = await Promise.all(
-    items
-      .filter((item) => item.itunes_episodeType !== 'trailer')
-      .map(
-        async ({
-          description,
-          content_encoded,
-          id,
-          title,
-          enclosures,
-          published,
-          podcast_transcript,
-          itunes_duration,
-          itunes_episode,
-          itunes_episodeType,
-          itunes_image
-        }) => {
-          const episodeNumber =
-            itunes_episodeType === 'bonus' ? 'Bonus' : `${itunes_episode}`;
-          const episodeSlug = dasherize(title);
-          const episodeContent = content_encoded || description;
-          const transcript = pickTranscript(podcast_transcript);
-          const audioEnclosure =
-            enclosures.find((enclosure) =>
-              enclosure.type?.toLowerCase().startsWith('audio/')
-            ) ?? enclosures[0];
-
-          return {
-            id,
-            title: `${title}`,
-            content: episodeContent,
-            description: truncate(htmlToText(description), 260),
-            duration: itunes_duration,
-            episodeImage: itunes_image?.href,
-            episodeNumber,
-            episodeSlug,
-            episodeThumbnail: await optimizeImage(itunes_image?.href),
-            published,
-            transcriptUrl: transcript?.url,
-            transcriptType: transcript?.type,
-            audio: {
-              src: audioEnclosure.url,
-              type: audioEnclosure.type ?? 'audio/mpeg'
-            }
-          };
-        }
-      )
+  const entries = await getCollection('episodes', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true
   );
+
+  const processor = await getMarkdownProcessor();
+
+  const episodes: Array<Episode> = await Promise.all(
+    entries.map(async (entry) => {
+      const { data } = entry;
+      const episodeNumber = `${data.episodeNumber}`;
+      const episodeSlug = data.slug ?? episodeNumber;
+
+      // Show notes: the markdown body rendered to HTML.
+      const { code: content } = await processor.render(entry.body ?? '');
+
+      return {
+        id: episodeSlug,
+        title: data.title,
+        content,
+        description: data.description,
+        duration: data.duration,
+        episodeImage: data.episodeImage,
+        episodeNumber,
+        episodeSlug,
+        episodeThumbnail: data.episodeImage,
+        published: data.published.getTime(),
+        audio: {
+          src: new URL(`/episodes/${data.audio}`, site).toString(),
+          type: data.audioType
+        },
+        audioBytes: data.audioBytes
+      };
+    })
+  );
+
+  // Newest first, matching the ordering the site previously got from the feed.
+  episodes.sort((a, b) => b.published - a.published);
 
   episodesCache = episodes;
   return episodes;

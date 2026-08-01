@@ -10,16 +10,23 @@ export async function getStaticPaths() {
   const allEpisodes = await getAllEpisodes();
 
   return allEpisodes.flatMap((episode) => {
-    return [
+    const paths = [
       {
         params: { episode: episode.episodeNumber },
         props: { episode }
-      },
-      {
-        params: { episode: episode.episodeSlug },
-        props: { episode }
       }
     ];
+
+    // Also serve the slug route when it differs from the episode number
+    // (the slug defaults to the number, which would duplicate the route).
+    if (episode.episodeSlug !== episode.episodeNumber) {
+      paths.push({
+        params: { episode: episode.episodeSlug },
+        props: { episode }
+      });
+    }
+
+    return paths;
   });
 }
 

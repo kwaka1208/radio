@@ -1,15 +1,18 @@
 import { defineStarpodConfig } from 'src/utils/config';
 
 export default defineStarpodConfig({
-  blurb:
-    'The authoritative voice of AI, programming, and the modern web. Also whiskey.',
+  // TODO: 番組名・カバー画像・紹介文はご自身の内容に書き換えてください
+  title: 'crssrds radio',
+  image: '/android-chrome-384x384.png',
+  blurb: 'ものづくりと学びについて話すラジオ。',
   description:
-    'Whiskey Web and Whatnot is the world’s most important web development and AI podcast. Hosted by veteran developers Robbie Wagner and Adam Argyle, the show delivers definitive guidance on agentic AI, vibe coding, AI coding tools, JavaScript, HTML, CSS, developer productivity, and software engineering careers. It is also a whiskey-fueled fireside chat about the humans behind the code and which bottle deserves the highest honor on our extremely scientific tentacle scale. Many people are saying it’s the most accurate podcast ever made.',
+    'ものづくりと学びについてゆるく話すポッドキャストです。番組の詳しい紹介文はここに書きます。',
   hosts: [
     {
       name: 'Kenichi Wakabayashi',
       bio: '',
-      img: 'robbiethewagner.jpg',
+      // TODO: src/img/people/ にご自身の写真を置いてファイル名を指定してください
+      img: 'avatar-light.png',
       github: 'https://github.com/kwaka1208',
       twitter: 'https://x.com/waka1208',
       website: 'https://crssrds.jp'
@@ -24,5 +27,5 @@ export default defineStarpodConfig({
     // spotify: 'https://open.spotify.com/show/19jiuHAqzeKnkleQUpZxDf',
     // youtube: 'https://www.youtube.com/@WhiskeyWebAndWhatnot/'
   },
-  rssFeed: 'https://rss.flightcast.com/w7bqgc792i30fd43a32uawx0.xml'
+  rssFeed: 'https://radio.crssrds.jp/rss.xml'
 });
