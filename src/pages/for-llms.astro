@@ -166,6 +166,18 @@ if (episodes.length > 0) {
           )
         }
         {
+          starpodConfig.platforms.amazon && (
+            <li>
+              <a
+                href={starpodConfig.platforms.amazon}
+                class="animated-bottom-border text-light-text-heading font-bold after:mt-1 dark:text-white"
+              >
+                Amazon Music
+              </a>
+            </li>
+          )
+        }
+        {
           starpodConfig.platforms.spotify && (
             <li>
               <a

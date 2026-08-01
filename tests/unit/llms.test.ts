@@ -150,6 +150,7 @@ describe('LLM Utilities', () => {
       categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
+      email: 'test@example.com',
       hosts: [
         {
           name: 'Host One',
@@ -236,6 +237,7 @@ describe('LLM Utilities', () => {
       categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
+      email: 'test@example.com',
       hosts: [
         { name: 'Host One', bio: 'Bio', img: 'host.jpg' },
         { name: 'Host Two', bio: 'Bio 2', img: 'host2.jpg' }
@@ -396,6 +398,7 @@ describe('LLM Utilities', () => {
       categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
+      email: 'test@example.com',
       hosts: [
         {
           name: 'Host One',
@@ -485,6 +488,7 @@ describe('LLM Utilities', () => {
       categories: [{ category: 'Technology' }],
       blurb: 'Test blurb',
       description: 'Test description',
+      email: 'test@example.com',
       hosts: [
         {
           name: 'Host One',

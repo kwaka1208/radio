@@ -73,6 +73,11 @@ export const GET: APIRoute = async ({ site }) => {
       <link>${escapeXml(siteUrl)}</link>
     </image>
     <itunes:author>${escapeXml(author)}</itunes:author>
+    <managingEditor>${escapeXml(starpodConfig.email)} (${escapeXml(author)})</managingEditor>
+    <itunes:owner>
+      <itunes:name>${escapeXml(author)}</itunes:name>
+      <itunes:email>${escapeXml(starpodConfig.email)}</itunes:email>
+    </itunes:owner>
     <itunes:summary>${cdata(show.description)}</itunes:summary>
     <itunes:image href="${escapeXml(show.itunesImage)}"/>
     <itunes:type>${starpodConfig.type ?? 'episodic'}</itunes:type>

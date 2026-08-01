@@ -58,6 +58,13 @@ export type StarpodConfig = {
    */
   description: string;
   /**
+   * The show owner's contact email. Emitted in the RSS feed as
+   * `<itunes:owner><itunes:email>` and `<managingEditor>`. Podcast directories
+   * (notably Amazon Music) require this to verify ownership. NOTE: this address
+   * is published in the public feed and is visible to anyone.
+   */
+  email: string;
+  /**
    * Apple Podcasts categories for the show. The first entry is the primary
    * category (required by Apple). Each entry is a top-level category and an
    * optional subcategory, emitted as nested `<itunes:category>` tags. Use the
@@ -74,6 +81,7 @@ export type StarpodConfig = {
   platforms: {
     apple?: string;
     appleIdNumber?: string;
+    amazon?: string;
     overcast?: string;
     pocketCasts?: string;
     spotify?: string;

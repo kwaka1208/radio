@@ -31,6 +31,15 @@ const show = await getShowInfo();
     )
   }
   {
+    platforms?.amazon && (
+      <a
+        class="gradient-icon amazon-music h-6 w-6"
+        href={platforms.amazon}
+        aria-label={`Listen to ${show.title} on Amazon Music.`}
+      />
+    )
+  }
+  {
     platforms?.overcast && (
       <a
         class="gradient-icon overcast h-6 w-6"
@@ -62,6 +71,10 @@ const show = await getShowInfo();
 <style>
   .apple {
     mask-image: url(/images/apple.svg);
+  }
+
+  .amazon-music {
+    mask-image: url(/images/amazon-music.svg);
   }
 
   .overcast {

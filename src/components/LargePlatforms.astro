@@ -1,6 +1,7 @@
 ---
 import starpodConfig from '../../starpod.config';
 import AppleIcon from '../svgs/apple.svg?raw';
+import AmazonMusicIcon from '../svgs/amazon-music.svg?raw';
 import OvercastIcon from '../svgs/overcast.svg?raw';
 import PocketCastsIcon from '../svgs/pocket-casts.svg?raw';
 import SpotifyIcon from '../svgs/spotify.svg?raw';
@@ -22,6 +23,21 @@ const { platforms, rssFeed } = starpodConfig;
           Apple Podcasts
           <span class="ml-3 flex h-4 w-4 items-center">
             <Fragment set:html={AppleIcon} />
+          </span>
+        </span>
+      </a>
+    )
+  }
+  {
+    platforms?.amazon && (
+      <a
+        class="animated-bottom-border text-light-text-heading font-bold after:mt-4 dark:text-white"
+        href={platforms.amazon}
+      >
+        <span class="flex items-center">
+          Amazon Music
+          <span class="ml-3 flex h-4 w-4 items-center">
+            <Fragment set:html={AmazonMusicIcon} />
           </span>
         </span>
       </a>
