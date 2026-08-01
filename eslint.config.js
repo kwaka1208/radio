@@ -18,5 +18,14 @@ export default [
       // override/add rules settings here, such as:
       // "astro/no-set-html-directive": "error"
     }
+  },
+  {
+    // Node 環境で動く設定ファイル・.mjs スクリプト（process などを使う）
+    files: ['*.config.{js,mjs}', 'src/lib/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    }
   }
 ];

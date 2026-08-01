@@ -5,7 +5,7 @@ GITHUB=https://github.com/kwaka1208/radio/
 # corepack は Node に同梱されており、pnpm 未インストール環境でも動く。
 PNPM=corepack pnpm
 
-.PHONY: github serve build preview install release release-audio
+.PHONY: github serve build preview install check release release-audio
 
 github:
 	open $(GITHUB)
@@ -27,12 +27,19 @@ preview: build
 install:
 	$(PNPM) install
 
+# デプロイ前チェック（Lint + ユニットテスト）
+# 型チェック（astro check）は build 側で実行される。
+check:
+	$(PNPM) lint
+	$(PNPM) test:unit run
+
 # ビルド後にサイトを同期
+# 事前に check（Lint + ユニットテスト）を実行し、失敗すればデプロイを止める。
 # 注意: --delete は「dist に無いリモートのファイルを削除」する。
 # 音声はサーバー上の dist/episodes/ で管理し、ビルド成果物に含めない。
 # --exclude='episodes/' で削除から必ず保護すること（外すと音声が消える）。
 # 音声のアップロードは release-audio で別途行う。
-release: build
+release: check build
 	rsync -avz --delete --exclude='docs/' --exclude='episodes/' ./dist/ pote2@pote2.sakura.ne.jp:/home/pote2/www/radio/dist/
 
 # 音声ファイルをサーバーへアップロード

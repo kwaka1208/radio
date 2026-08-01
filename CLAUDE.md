@@ -17,10 +17,11 @@ podcast RSS feed (`/rss.xml`) from them. Show-level metadata lives in
 - **Build:** `pnpm build` (runs `astro check` then `astro build`)
 - **Lint:** `pnpm lint` (ESLint with caching)
 - **Lint fix:** `pnpm lint:fix`
-- **All tests:** `pnpm test` (runs unit + e2e concurrently)
-- **Unit tests only:** `pnpm test:unit` (Vitest)
+- **All tests:** `pnpm test` (Vitest unit tests, single run)
+- **Unit tests only:** `pnpm test:unit` (Vitest, watch mode)
 - **Single unit test:** `pnpm exec vitest run tests/unit/Player.test.tsx`
-- **E2E tests only:** `pnpm test:e2e` (Playwright, auto-starts dev server)
+- **Pre-deploy check:** `make check` (Lint + unit tests; also run automatically
+  by `make release` before build)
 
 ## Architecture
 
@@ -81,8 +82,6 @@ which `make release` protects from deletion.
 
 - **Unit tests** (`tests/unit/`): Vitest + jsdom + @testing-library/preact.
   Setup file at `tests/unit/test-setup.ts`.
-- **E2E tests** (`tests/e2e/`): Playwright testing against chromium, firefox,
-  and webkit.
 
 ### TypeScript
 
