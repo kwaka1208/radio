@@ -1,5 +1,4 @@
 # build output
-.vercel/
 dist/
 
 # generated types
@@ -25,6 +24,12 @@ test-results/
 .env
 .env.production
 
+# lockfiles (pnpm-only project)
+package-lock.json
+yarn.lock
+
+# audio files (uploaded to the server via `make release-audio`, not tracked)
+public/episodes/
+
 # macOS-specific files
 .DS_Store
-package-lock.json
