@@ -47,6 +47,7 @@ export const GET: APIRoute = async ({ site }) => {
       <content:encoded>${cdata(episode.content)}</content:encoded>
       <enclosure url="${escapeXml(new URL(episode.audio.src, siteUrl).toString())}" type="${escapeXml(episode.audio.type)}" length="${episode.audioBytes ?? 0}"/>
       <itunes:episode>${episode.episodeNumber}</itunes:episode>
+      <itunes:episodeType>${episode.episodeType}</itunes:episodeType>
       <itunes:duration>${episode.duration}</itunes:duration>
       <itunes:explicit>false</itunes:explicit>${
         episode.episodeImage
@@ -74,6 +75,7 @@ export const GET: APIRoute = async ({ site }) => {
     <itunes:author>${escapeXml(author)}</itunes:author>
     <itunes:summary>${cdata(show.description)}</itunes:summary>
     <itunes:image href="${escapeXml(show.itunesImage)}"/>
+    <itunes:type>${starpodConfig.type ?? 'episodic'}</itunes:type>
 ${categories}
     <itunes:explicit>false</itunes:explicit>
 ${items}

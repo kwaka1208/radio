@@ -175,6 +175,7 @@ describe('LLM Utilities', () => {
         content: 'Episode content',
         episodeSlug: 'episode-1',
         episodeNumber: '1',
+        episodeType: 'full',
         audio: { src: 'https://example.com/ep1.mp3', type: 'audio/mpeg' }
       }
     ];
@@ -252,6 +253,7 @@ describe('LLM Utilities', () => {
       content: '<p>Episode HTML content</p>',
       episodeSlug: 'test-episode',
       episodeNumber: '42',
+      episodeType: 'full',
       audio: { src: 'https://example.com/ep.mp3', type: 'audio/mpeg' }
     };
 
@@ -328,6 +330,7 @@ describe('LLM Utilities', () => {
         content: 'Content 1',
         episodeSlug: 'episode-1',
         episodeNumber: '1',
+        episodeType: 'full',
         audio: { src: 'https://example.com/ep1.mp3', type: 'audio/mpeg' }
       },
       {
@@ -339,6 +342,7 @@ describe('LLM Utilities', () => {
         content: 'Content 2',
         episodeSlug: 'episode-2',
         episodeNumber: '2',
+        episodeType: 'full',
         audio: { src: 'https://example.com/ep2.mp3', type: 'audio/mpeg' }
       }
     ];
@@ -418,6 +422,7 @@ describe('LLM Utilities', () => {
         content: 'Content',
         episodeSlug: 'episode-1',
         episodeNumber: '1',
+        episodeType: 'full',
         audio: { src: 'https://example.com/ep1.mp3', type: 'audio/mpeg' }
       }
     ];

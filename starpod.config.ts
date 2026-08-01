@@ -8,6 +8,8 @@ export default defineStarpodConfig({
   // ポッドキャスト配信用のカバーアート（RSSの itunes:image と channel image）。
   // 未指定なら image を使う。ディレクトリ表示用に大きめの正方形画像を指定する。
   itunesImage: '/images/radio-3000.png',
+  // 配信形式: 各回独立なら 'episodic'、連続ものなら 'serial'。
+  type: 'episodic',
   blurb: 'ITとかAIとか学びについてその時の気分で話します',
   description:
     'ITとかAIとか学びとか、若林の関心のあること、話したいことを徒然なるままに話します',

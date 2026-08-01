@@ -43,6 +43,13 @@ export type StarpodConfig = {
    */
   itunesImage?: string;
   /**
+   * The show's distribution format for Apple Podcasts (`<itunes:type>`).
+   * `episodic` (default) presents episodes newest-first as standalone shows;
+   * `serial` presents them oldest-first as an ordered series. When omitted,
+   * `episodic` is used.
+   */
+  type?: 'episodic' | 'serial';
+  /**
    * A very short tagline for your show. Generally, no more than one sentence. Less is more here.
    */
   blurb: string;

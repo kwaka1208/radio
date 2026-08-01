@@ -24,6 +24,8 @@ export interface Episode {
   episodeNumber?: string;
   episodeSlug: string;
   episodeThumbnail?: string;
+  /** Episode type for the feed's `<itunes:episodeType>` (full/trailer/bonus). */
+  episodeType: 'full' | 'trailer' | 'bonus';
   audio: {
     src: string;
     type: string;
@@ -106,6 +108,7 @@ export async function getAllEpisodes() {
         episodeNumber,
         episodeSlug,
         episodeThumbnail: data.episodeImage,
+        episodeType: data.episodeType,
         published: data.published.getTime(),
         audio: {
           // Root-relative so the on-page player resolves it against whatever

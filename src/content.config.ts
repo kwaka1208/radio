@@ -27,6 +27,11 @@ const episodes = defineCollection({
     slug: z.string().optional(),
     /** Optional episode artwork URL. Falls back to the show image. */
     episodeImage: z.string().optional(),
+    /**
+     * Episode type for the feed (`<itunes:episodeType>`): a regular episode
+     * (`full`), a `trailer`, or a `bonus` segment. Defaults to `full`.
+     */
+    episodeType: z.enum(['full', 'trailer', 'bonus']).default('full'),
     draft: z.boolean().default(false)
   })
 });
