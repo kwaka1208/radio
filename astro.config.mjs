@@ -3,6 +3,7 @@ import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
+import { unified } from '@astrojs/markdown-remark';
 
 import rehypeTranscriptTimestamps from './src/lib/rehype-transcript-timestamps.mjs';
 
@@ -33,7 +34,7 @@ export default defineConfig({
   },
   markdown: {
     // Makes bracketed timestamps in markdown transcripts clickable for seeking.
-    rehypePlugins: [rehypeTranscriptTimestamps]
+    processor: unified({ rehypePlugins: [rehypeTranscriptTimestamps] })
   },
   experimental: {
     clientPrerender: true
