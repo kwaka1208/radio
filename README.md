@@ -194,7 +194,6 @@ make release-audio  # public/episodes/ の音声をサーバーへアップロ�
 ## ライセンス・クレジット
 
 このサイトは [Starpod](https://github.com/shipshapecode/starpod)
-（[Ship Shape](https://shipshape.io/) 製のポッドキャストサイトジェネレーター）を
-ベースにしています。
+（ポッドキャストサイトジェネレーター）をベースにしています。
 
 [MITライセンス](https://opensource.org/licenses/MIT) で公開されています。
