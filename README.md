@@ -1,259 +1,200 @@
-# Starpod
+# crossradio
 
-Starpod is the easiest way to create a podcast website in 5 minutes or less and
-it is 100% free and open source.
+[`radio.crssrds.jp`](https://radio.crssrds.jp) で公開しているポッドキャスト
+サイトです。エピソードは1回につき1つのMarkdownファイルとしてローカルで管理し、
+エピソードページとポッドキャスト用のRSSフィード（`/rss.xml`）の両方をそこから
+自動生成します。
 
-### Configuration
+## 技術スタック
 
-You will need to configure your RSS feed and a few other pieces of info for your
-podcast in starpod.config.mjs. We provide a util function `defineStarpodConfig`
-that provides TypeScript types and enforces the correct formats for config
-values.
+- **[Astro 7](https://astro.build/)** — 完全な静的サイト生成（サーバー
+  アダプターなし）。`dist/` にビルドし、自前サーバーへデプロイします。
+- **[Preact](https://preactjs.com/)** — プレイヤーや検索などのインタラクティブ
+  コンポーネント
+- **[Tailwind CSS v4](https://tailwindcss.com/)** — Viteプラグイン経由
+- **[Valibot](https://valibot.dev/)** — 設定ファイルのバリデーション
+- パッケージ管理は **pnpm**（`corepack` 経由で実行）
 
-An example config can be found [here](./starpod.config.ts).
+## セットアップ
 
-#### Options
+pnpm は Node 同梱の corepack を使って実行します（PATH に pnpm を入れていなくても
+動きます）。
 
-##### blurb
-
-A very short tagline for your show. Generally, no more than one sentence. Less
-is more here.
-
-**Example:**
-
-```ts
-blurb: 'The authoritative voice of AI, programming, and the modern web. Also whiskey.',
+```sh
+corepack pnpm install   # 依存関係のインストール（make install でも可）
+corepack pnpm dev       # 開発サーバー起動（http://localhost:4321、make serve でも可）
 ```
 
-##### description
+主なコマンド:
 
-A somewhat longer description of what your show is about. This should still
-ideally be fairly short, and should usually be 2-4 sentences.
+| コマンド | 内容 |
+| --- | --- |
+| `corepack pnpm dev` | 開発サーバー（localhost:4321） |
+| `corepack pnpm build` | `astro check`（型チェック）→ `astro build` で `dist/` に静的サイト生成 |
+| `corepack pnpm lint` / `lint:fix` | ESLint |
+| `corepack pnpm test` | Vitest ユニットテスト（単発実行） |
+| `make check` | デプロイ前チェック（Lint + ユニットテスト） |
 
-**Example:**
+---
 
-```ts
-description:
-  'ここに説明をいれる',
+## このサイトをクローンして別のポッドキャストサイトを作る
+
+このリポジトリは、そのまま複製して自分のポッドキャストサイトに作り替えられます。
+以下の手順で自分の内容に置き換えてください。
+
+### 1. リポジトリを複製する
+
+```sh
+git clone <このリポジトリのURL> my-podcast
+cd my-podcast
+corepack pnpm install
 ```
 
-##### hosts
+### 2. サイト情報を書き換える（`starpod.config.ts`）
 
-A list of your show's hosts and their info.
+番組名・紹介文・ホスト・配信プラットフォームなどはすべて
+[`starpod.config.ts`](./starpod.config.ts) にまとまっています。詳細は後述の
+[サイト情報の変更](#サイト情報の変更) を参照してください。
 
-**Example:**
+### 3. 画像を差し替える
 
-```ts
-hosts: [
-  {
-    name: 'RobbieTheWagner',
-    bio: 'Huge Ember and Tailwind fanboy. I used to work at Netflix btw.',
-    img: '/src/img/people/robbiethewagner.jpg',
-    github: 'https://github.com/RobbieTheWagner',
-    twitter: 'https://twitter.com/RobbieTheWagner',
-    website: 'https://robbiethewagner.dev'
-  },
-  {
-    name: 'Charles William Carpenter III',
-    bio: 'Third of his name, user of gifs, hater of ESM.',
-    img: '/src/img/people/chuckcarpenter.jpg',
-    github: 'https://github.com/chuckcarpenter',
-    twitter: 'https://twitter.com/CharlesWthe3rd'
-  },
-  {
-    name: 'Adam Argyle',
-    bio: 'Devigner unicorn, CSS dork, punky but nice.',
-    img: 'argyleink.jpg',
-    github: 'https://github.com/argyleink',
-    twitter: 'https://x.com/argyleink',
-    website: 'https://nerdy.dev'
-  }
-],
+- `public/images/radio.png` — サイト表示用のカバー画像（OGP・ヘッダー・一覧
+  サムネイルのフォールバック）
+- `public/images/radio-3000.png` — ポッドキャスト配信用のカバーアート
+  （RSS の `itunes:image`）。大きめの正方形画像（1400〜3000px）を用意します。
+- `src/images/people/` — ホストの顔写真。`starpod.config.ts` の `hosts[].img`
+  でファイル名を指定します。
+- `public/favicon.svg` などのファビコン類
+
+> ファイル名を変える場合は `starpod.config.ts` の `image` / `itunesImage` /
+> `hosts[].img` の指定も合わせて変更してください。
+
+### 4. デプロイ先を自分の環境に変更する（`Makefile`）
+
+[`Makefile`](./Makefile) の先頭にある変数と rsync 先を書き換えます。
+
+```makefile
+GITHUB=https://github.com/<あなた>/<リポジトリ>/
+PUBLIC_GA_ID=G-XXXXXXXXXX          # Google Analytics を使う場合
 ```
 
-##### platforms
+`release` / `release-audio` ターゲットの rsync 先（`user@host:/path/`）を自分の
+サーバーに変更してください。詳細は [ビルドとデプロイ](#ビルドとデプロイ) を参照。
 
-Links to the platforms your show is available on.
+### 5. 環境変数を設定する（任意）
 
-**Example:**
+必要に応じて以下を設定します（未設定でも動作します）。
 
-```ts
-platforms: {
-  apple:
-    'https://podcasts.apple.com/us/podcast/whiskey-web-and-whatnot/id1552776603?uo=4?mt=2&ls=1',
-  overcast: 'https://overcast.fm/itunes1552776603',
-  spotify: 'https://open.spotify.com/show/19jiuHAqzeKnkleQUpZxDf',
-  youtube: 'https://www.youtube.com/@WhiskeyWebAndWhatnot/'
-},
+- `PUBLIC_GA_ID` — Google Analytics 4 の測定ID（例: `G-XXXXXXXXXX`）。
+  ビルド時に設定されているとGAスニペットが埋め込まれます。
+- `STANDARD_SITE_DID` — [standard.site](https://standard.site/) 検証用の
+  ATProto DID（例: `did:plc:abc123`）。
+- `STANDARD_SITE_PUBLICATION_RKEY` — standard.site の publication レコードキー。
+
+---
+
+## サイト情報の変更
+
+番組全体のメタ情報は [`starpod.config.ts`](./starpod.config.ts) で管理します。
+主なフィールドは次のとおりです。
+
+| フィールド | 内容 |
+| --- | --- |
+| `title` | 番組名（サイト全体とRSSチャンネルのタイトルに使用） |
+| `image` | サイト表示用カバー画像のパス |
+| `itunesImage` | RSS配信用カバーアート（大きめの正方形画像。省略時は `image`） |
+| `type` | 配信形式。各回独立なら `episodic`、連続ものなら `serial` |
+| `blurb` | ごく短いキャッチコピー（1文程度） |
+| `description` | 番組説明（2〜4文程度） |
+| `email` | 番組の連絡先メール。RSSの `itunes:owner` に出力され、**フィードで一般公開されます**（Amazon Music 等が所有者確認に使用） |
+| `categories` | Apple Podcasts のカテゴリ。先頭がプライマリ（必須）。Apple の正式名称をそのまま指定 |
+| `hosts` | ホスト一覧（`name` / `bio` / `img` / 任意で `github` / `twitter` / `website`） |
+| `platforms` | 配信先リンク（`apple` / `appleIdNumber` / `amazon` / `spotify` / `youtube` / `overcast` / `pocketCasts`） |
+| `rssFeed` | 公開するRSSフィードのURL |
+
+設定は `defineStarpodConfig()` で型チェック・バリデーションされます。
+
+---
+
+## コンテンツ（エピソード）の追加
+
+### 1. エピソードのMarkdownを作成する
+
+`src/content/episodes/` に1エピソード＝1ファイルでMarkdownを追加します。
+ファイル名は任意ですが、エピソード番号（例: `1.md`）にしておくと分かりやすいです。
+
+```markdown
+---
+title: Podcast復活します
+episodeNumber: 1
+published: 2026-08-01
+audio: ep001.m4a
+duration: 650
+description: Podcastをまたはじめます
+---
+ここに本文（ショーノート）をMarkdownで書きます。
 ```
 
-##### rssFeed
+frontmatter のフィールド:
 
-The url to the RSS feed where your podcast is hosted.
+| フィールド | 必須 | 内容 |
+| --- | --- | --- |
+| `title` | ✅ | エピソードのタイトル |
+| `episodeNumber` | ✅ | エピソード番号（正の整数） |
+| `published` | ✅ | 公開日（`YYYY-MM-DD`） |
+| `audio` | ✅ | 音声ファイル名（サーバー上の `/episodes/` 配下。例: `ep001.m4a`） |
+| `duration` | ✅ | 再生時間（秒） |
+| `description` | ✅ | 一覧・メタタグ・フィード用の短い説明文 |
+| `audioType` | | 音声のMIMEタイプ（既定: `audio/mpeg`） |
+| `audioBytes` | | 音声のバイト数（RSSの enclosure 用。不明なら `0`） |
+| `slug` | | URLスラッグ（省略時はエピソード番号） |
+| `episodeImage` | | エピソード個別のアートワークURL（省略時は番組画像） |
+| `episodeType` | | `full`（既定）/ `trailer` / `bonus` |
+| `draft` | | `true` で下書き（公開されません） |
 
-**Example:**
+本文（frontmatter より下）がショーノートとして各エピソードページに表示されます。
 
-```ts
-rssFeed: 'https://rss.flightcast.com/w7bqgc792i30fd43a32uawx0.xml';
+### 2. 音声ファイルを配置する
+
+**音声ファイルはリポジトリには含めません。** サーバー上の `dist/episodes/`
+ディレクトリで管理します。アップロード用に `public/episodes/` に音声を置いておき、
+`make release-audio` でサーバーへ同期します（後述）。
+
+### 3. トランスクリプト（任意）
+
+`src/content/transcripts/` にエピソード番号を名前にしたMarkdownを置くと、
+エピソードページにトランスクリプトが表示されます。本文中の `[HH:MM:SS]` 形式の
+タイムスタンプはクリック可能になり、プレイヤーを該当位置にシークします。
+
+> トランスクリプトのタイムスタンプ処理（rehypeプラグイン）を変更した場合は、
+> Astroのコンテンツレンダーキャッシュの都合で **開発サーバーの再起動が必要** です。
+
+---
+
+## ビルドとデプロイ
+
+このサイトは完全な静的サイトとして `dist/` にビルドし、rsync で自前サーバーへ
+同期してデプロイします。`Makefile` に一連の操作をまとめています。
+
+```sh
+make check          # Lint + ユニットテスト（デプロイ前チェック）
+make build          # dist/ に静的サイトを生成（PUBLIC_GA_ID を渡してGA有効化）
+make release        # check → build のあと dist/ をサーバーへ rsync
+make release-audio  # public/episodes/ の音声をサーバーへアップロード
 ```
 
-#### Setting up the contact form
+> **⚠️ 注意:** `make release` の rsync は `--delete` 付きで「dist に無い
+> リモートのファイルを削除」します。音声はサーバー上の `dist/episodes/` で
+> 管理しているため、`--exclude='episodes/'` で削除から保護しています。
+> この除外を外すと**サーバー上の音声がすべて消える**ので注意してください。
+> 音声のアップロードは `make release-audio` で別途行います。
 
-The contact form hits an APIRoute at `/api/contact`. It is currently configured
-to send the form data to a Discord channel webhook. It reads the url from
-`import.meta.env.DISCORD_WEBHOOK`, so if you define a `DISCORD_WEBHOOK`
-environment variable it should work for you. Of course, feel free to customize
-the code [here](./src/pages/api/contact.ts) to send the data elsewhere as you
-see fit.
+---
 
-#### standard.site (ATProto Federation)
+## ライセンス・クレジット
 
-Starpod supports [standard.site](https://standard.site/) — a specification that
-connects your podcast website to [ATProto](https://atproto.com/) (the protocol
-behind Bluesky). Each episode is published as an individual document on the
-federated web. Enabling this allows:
+このサイトは [Starpod](https://github.com/shipshapecode/starpod)
+（[Ship Shape](https://shipshape.io/) 製のポッドキャストサイトジェネレーター）を
+ベースにしています。
 
-- **Verified ownership** — Cryptographically prove you own your content across
-  the federated web
-- **Cross-platform discovery** — Your podcast appears on ATProto readers like
-  [Leaflet](https://leaflet.pub/) and [Pckt](https://pckt.blog)
-- **Federated engagement** — Comments and interactions from Bluesky and other
-  ATProto apps can connect back to your site
-- **Episode-level publishing** — Each episode is a standalone document in ATProto
-
-This feature is entirely optional. The site works perfectly without it — the
-verification endpoint simply returns a 404 when unconfigured. No changes to
-`astro.config.mjs` are needed.
-
-##### Initial Setup
-
-1. Create an [app password](https://bsky.app/settings/app-passwords) on Bluesky
-2. Create your publication record (run once):
-
-```bash
-ATPROTO_HANDLE=you.bsky.social \
-ATPROTO_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx \
-STANDARD_SITE_URL=https://your-podcast.com \
-pnpm tsx scripts/create-publication.ts
-```
-
-3. Save the output values as environment variables
-
-##### Environment Variables
-
-Set these in your `.env` file for local development and as **GitHub Actions
-secrets** for automated publishing:
-
-| Variable | Description | Where to find it |
-|----------|-------------|------------------|
-| `STANDARD_SITE_DID` | Your ATProto DID (decentralized identifier) | [bsky.app/settings](https://bsky.app/settings) → scroll to "DID" |
-| `STANDARD_SITE_PUBLICATION_RKEY` | Record key for your publication | Returned by `scripts/create-publication.ts` |
-| `ATPROTO_HANDLE` | Your Bluesky handle (e.g., `you.bsky.social`) | Your Bluesky username |
-| `ATPROTO_APP_PASSWORD` | App password for ATProto API access | [bsky.app/settings/app-passwords](https://bsky.app/settings/app-passwords) |
-| `STANDARD_SITE_URL` | Your podcast website URL (e.g., `https://whiskey.fm`) | Your deployed site URL |
-
-##### GitHub Actions Secrets
-
-Add the following secrets to your repository at **Settings → Secrets and
-variables → Actions → New repository secret**:
-
-- `ATPROTO_HANDLE`
-- `ATPROTO_APP_PASSWORD`
-- `STANDARD_SITE_URL`
-- `STANDARD_SITE_PUBLICATION_RKEY`
-- `STANDARD_SITE_DID`
-
-##### Publishing Episodes
-
-Episodes are published to ATProto as individual documents automatically:
-
-- **Automatic** — The `Publish Episodes to ATProto` workflow runs after each
-  daily site rebuild and publishes any new episodes
-- **Manual** — Trigger the workflow manually from the Actions tab
-- **Backfill** — Use the `Backfill Episodes to ATProto` workflow (Actions tab →
-  Run workflow → type "backfill") to publish all existing episodes
-
-You can also publish locally:
-
-```bash
-# Publish only new episodes
-pnpm publish:episodes
-
-# Backfill all episodes
-pnpm publish:episodes:backfill
-```
-
-##### Verification
-
-After deploying, verify the well-known endpoint with:
-
-```bash
-curl https://your-site.com/.well-known/site.standard.publication
-```
-
-For full setup instructions (creating a publication, syncing posts, etc.), see
-the [`@bryanguffey/astro-standard-site` README](https://github.com/musicjunkieg/astro-standard-site#readme).
-
-#### Configuring guests
-
-We use Turso and Astro DB to setup guests per episode. If you would also like to
-do this, you will need a Turso account.
-
-### LLM Discovery Features
-
-Starpod includes built-in support for LLM (Large Language Model) discovery
-through the [llms.txt specification](https://llmstxt.org/). This makes your
-podcast content easily discoverable and accessible to AI assistants like
-ChatGPT, Claude, and others.
-
-#### What's Included
-
-- `/llms.txt` - Structured file following the llms.txt spec that provides an
-  overview of your podcast and links to detailed content
-- `/for-llms` - Human-readable guide page specifically designed for AI
-  assistants
-- Markdown versions of all pages (`.html.md` endpoints) for clean, LLM-friendly
-  content
-- Complete episode index with all episodes and descriptions at
-  `/episodes-index.html.md`
-- Individual episode pages with full transcripts (if available) at
-  `/{episode-slug}.html.md`
-
-#### How LLMs Can Use Your Podcast
-
-With these features automatically generated from your RSS feed and config, LLMs
-can:
-
-- **Discover and recommend** specific episodes based on topics or themes
-- **Answer detailed questions** about episode content using full transcripts
-- **Summarize episodes** or extract key points and insights
-- **Find episodes** with specific guests or covering certain subjects
-- **Provide information** about your hosts, show format, and where to listen
-
-#### Transcript Support
-
-If you provide episode transcripts in
-`src/content/transcripts/[episode-number].md`, they will automatically be
-included in the LLM-accessible content. Transcripts are cleaned (timestamps
-removed) and formatted for optimal LLM consumption.
-
-All transcript content is available at `/{episode-slug}.html.md` or
-`/{episode-number}.html.md`.
-
-**Note:** Transcripts are optional. The LLM discovery features work perfectly
-fine without them, using episode descriptions and metadata from your RSS feed.
-
-#### Generated Endpoints
-
-All of the following endpoints are automatically generated at build time from
-your `starpod.config.ts` and RSS feed:
-
-- `/llms.txt` - Main discovery file
-- `/for-llms` - Human-readable guide page
-- `/for-llms.html.md` - Markdown version of guide
-- `/about.html.md` - Markdown version of about page
-- `/episodes-index.html.md` - Complete episode listing
-- `/{episode-slug}.html.md` - Individual episode with transcript
-- `/{episode-number}.html.md` - Alternative episode URL
-
-No configuration needed - it just works!
+[MITライセンス](https://opensource.org/licenses/MIT) で公開されています。
