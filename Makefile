@@ -1,4 +1,5 @@
 GITHUB=https://github.com/kwaka1208/radio/
+PUBLIC_GA_ID=G-J5KFM2ZDC8
 
 # このプロジェクトは pnpm 管理（pnpm-lock.yaml / packageManager）。
 # npm を使うと lockfile を無視し peer 依存でエラーになるため pnpm を使う。
@@ -17,7 +18,7 @@ serve:
 # Astroビルド（静的サイトを dist/ に生成）
 # GA を有効にするには PUBLIC_GA_ID=G-XXXXXXXXXX を環境変数で渡す
 build:
-	$(PNPM) build
+	PUBLIC_GA_ID=$(PUBLIC_GA_ID) $(PNPM) build
 
 # Astroプレビュー（ビルド後に起動）
 preview: build
