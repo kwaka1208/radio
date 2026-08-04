@@ -6,7 +6,7 @@ PUBLIC_GA_ID=G-J5KFM2ZDC8
 # corepack は Node に同梱されており、pnpm 未インストール環境でも動く。
 PNPM=corepack pnpm
 
-.PHONY: github serve build preview install check release release-audio
+.PHONY: github serve build preview install check release release-audio release-audio-force
 
 github:
 	open $(GITHUB)
@@ -48,3 +48,9 @@ release: check build
 # --delete は付けない: public/episodes/ に無い既存音声を消さないため。
 release-audio:
 	rsync -avz ./public/episodes/ pote2@pote2.sakura.ne.jp:/home/pote2/www/radio/dist/episodes/
+
+# 音声ファイルをサーバーへ強制上書きアップロード
+# --ignore-times でサイズ・更新時刻が同じでも必ず再転送し上書きする。
+# --delete は付けない: public/episodes/ に無い既存音声は消さない。
+release-audio-force:
+	rsync -avz --ignore-times ./public/episodes/ pote2@pote2.sakura.ne.jp:/home/pote2/www/radio/dist/episodes/
