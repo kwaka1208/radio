@@ -24,7 +24,7 @@ export default defineStarpodConfig({
       name: 'Kenichi Wakabayashi',
       bio: '',
       // TODO: src/images/people/ にご自身の写真を置いてファイル名を指定してください
-      img: 'me.jpg',
+      img: 'me.png',
       github: 'https://github.com/kwaka1208',
       twitter: 'https://x.com/kwaka1208',
       website: 'https://crssrds.jp'
