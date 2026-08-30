@@ -41,16 +41,16 @@ check:
 # --exclude='episodes/' で削除から必ず保護すること（外すと音声が消える）。
 # 音声のアップロードは release-audio で別途行う。
 release: check build
-	rsync -avz --delete --exclude='docs/' --exclude='episodes/' ./dist/ pote2@pote2.sakura.ne.jp:/home/pote2/www/radio/dist/
+	rsync -avz --delete --exclude='docs/' --exclude='episodes/' ./dist/ pote2@pote2.sakura.ne.jp:/home/pote2/www/crssrds.jp/radio/dist/
 
 # 音声ファイルをサーバーへアップロード
 # public/episodes/ の中身をサーバーの dist/episodes/ へ同期する（追加・更新のみ）。
 # --delete は付けない: public/episodes/ に無い既存音声を消さないため。
 release-audio:
-	rsync -avz ./public/episodes/ pote2@pote2.sakura.ne.jp:/home/pote2/www/radio/dist/episodes/
+	rsync -avz ./public/episodes/ pote2@pote2.sakura.ne.jp:/home/pote2/www/crssrds.jp/radio/dist/episodes/
 
 # 音声ファイルをサーバーへ強制上書きアップロード
 # --ignore-times でサイズ・更新時刻が同じでも必ず再転送し上書きする。
 # --delete は付けない: public/episodes/ に無い既存音声は消さない。
 release-audio-force:
-	rsync -avz --ignore-times ./public/episodes/ pote2@pote2.sakura.ne.jp:/home/pote2/www/radio/dist/episodes/
+	rsync -avz --ignore-times ./public/episodes/ pote2@pote2.sakura.ne.jp:/home/pote2/www/crssrds.jp/radio/dist/episodes/
