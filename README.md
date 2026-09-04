@@ -75,7 +75,6 @@ corepack pnpm install
 
 ```makefile
 GITHUB=https://github.com/<あなた>/<リポジトリ>/
-PUBLIC_GA_ID=G-XXXXXXXXXX          # Google Analytics を使う場合
 ```
 
 `release` / `release-audio` ターゲットの rsync 先（`user@host:/path/`）を自分の
@@ -85,8 +84,6 @@ PUBLIC_GA_ID=G-XXXXXXXXXX          # Google Analytics を使う場合
 
 必要に応じて以下を設定します（未設定でも動作します）。
 
-- `PUBLIC_GA_ID` — Google Analytics 4 の測定ID（例: `G-XXXXXXXXXX`）。
-  ビルド時に設定されているとGAスニペットが埋め込まれます。
 - `STANDARD_SITE_DID` — [standard.site](https://standard.site/) 検証用の
   ATProto DID（例: `did:plc:abc123`）。
 - `STANDARD_SITE_PUBLICATION_RKEY` — standard.site の publication レコードキー。
@@ -178,7 +175,7 @@ frontmatter のフィールド:
 
 ```sh
 make check          # Lint + ユニットテスト（デプロイ前チェック）
-make build          # dist/ に静的サイトを生成（PUBLIC_GA_ID を渡してGA有効化）
+make build          # dist/ に静的サイトを生成
 make release        # check → build のあと dist/ をサーバーへ rsync
 make release-audio  # public/episodes/ の音声をサーバーへアップロード
 ```

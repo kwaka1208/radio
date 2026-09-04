@@ -2,7 +2,6 @@
 import { ClientRouter } from 'astro:transitions';
 import { Schema } from 'astro-seo-schema';
 
-import Analytics from '../components/Analytics.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Dots from '../components/Dots.astro';
 import Hosts from '../components/Hosts.astro';
@@ -118,8 +117,6 @@ const description = Astro.props.description ?? starpodConfig.description;
         image: show.image
       }}
     />
-
-    <Analytics />
 
     <slot name="head" />
     <ClientRouter />

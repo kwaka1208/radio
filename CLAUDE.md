@@ -90,9 +90,6 @@ configured for Preact (`jsxImportSource: "preact"`).
 
 ## Environment Variables
 
-- `PUBLIC_GA_ID` — Google Analytics 4 measurement ID (e.g., `G-XXXXXXXXXX`).
-  When set at build time, `src/components/Analytics.astro` injects the GA
-  snippet; when unset, no analytics are emitted.
 - `STANDARD_SITE_DID` — Your ATProto DID for standard.site verification (e.g.,
   `did:plc:abc123`). Find yours at https://bsky.app/settings. Used by the
   in-site verification code (`src/lib/standardSite.ts`, the `.well-known`
