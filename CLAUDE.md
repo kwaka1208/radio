@@ -21,7 +21,7 @@ podcast RSS feed (`/rss.xml`) from them. Show-level metadata lives in
 - **Unit tests only:** `pnpm test:unit` (Vitest, watch mode)
 - **Single unit test:** `pnpm exec vitest run tests/unit/Player.test.tsx`
 - **Pre-deploy check:** `make check` (Lint + unit tests; also run automatically
-  by `make release` before build)
+  by `make deploy` before build)
 
 ## Architecture
 
@@ -54,7 +54,7 @@ the body is the show notes. `src/lib/rss.ts` exposes `getAllEpisodes()` /
 `src/pages/rss.xml.ts` generates the podcast RSS feed (`/rss.xml`, with
 `<enclosure>` and `<itunes:*>` tags) from the same data. Audio files are NOT
 in the repo — they are uploaded to the server's `dist/episodes/` directory,
-which `make release` protects from deletion.
+which `make deploy` protects from deletion.
 
 ### Source Structure
 

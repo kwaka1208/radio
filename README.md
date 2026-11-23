@@ -77,7 +77,7 @@ corepack pnpm install
 GITHUB=https://github.com/<あなた>/<リポジトリ>/
 ```
 
-`release` / `release-audio` ターゲットの rsync 先（`user@host:/path/`）を自分の
+`deploy` / `deploy-audio` ターゲットの rsync 先（`user@host:/path/`）を自分の
 サーバーに変更してください。詳細は [ビルドとデプロイ](#ビルドとデプロイ) を参照。
 
 ### 5. 環境変数を設定する（任意）
@@ -155,7 +155,7 @@ frontmatter のフィールド:
 
 **音声ファイルはリポジトリには含めません。** サーバー上の `dist/episodes/`
 ディレクトリで管理します。アップロード用に `public/episodes/` に音声を置いておき、
-`make release-audio` でサーバーへ同期します（後述）。
+`make deploy-audio` でサーバーへ同期します（後述）。
 
 ### 3. トランスクリプト（任意）
 
@@ -176,15 +176,15 @@ frontmatter のフィールド:
 ```sh
 make check          # Lint + ユニットテスト（デプロイ前チェック）
 make build          # dist/ に静的サイトを生成
-make release        # check → build のあと dist/ をサーバーへ rsync
-make release-audio  # public/episodes/ の音声をサーバーへアップロード
+make deploy        # check → build のあと dist/ をサーバーへ rsync
+make deploy-audio  # public/episodes/ の音声をサーバーへアップロード
 ```
 
-> **⚠️ 注意:** `make release` の rsync は `--delete` 付きで「dist に無い
+> **⚠️ 注意:** `make deploy` の rsync は `--delete` 付きで「dist に無い
 > リモートのファイルを削除」します。音声はサーバー上の `dist/episodes/` で
 > 管理しているため、`--exclude='episodes/'` で削除から保護しています。
 > この除外を外すと**サーバー上の音声がすべて消える**ので注意してください。
-> 音声のアップロードは `make release-audio` で別途行います。
+> 音声のアップロードは `make deploy-audio` で別途行います。
 
 ---
 

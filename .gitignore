@@ -28,7 +28,7 @@ test-results/
 package-lock.json
 yarn.lock
 
-# audio files (uploaded to the server via `make release-audio`, not tracked)
+# audio files (uploaded to the server via `make deploy-audio`, not tracked)
 public/episodes/
 
 # macOS-specific files
