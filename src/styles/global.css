@@ -41,7 +41,7 @@ footer:has(+ #audio-player .player) {
   }
 
   @media (width >= 1024px) {
-    & h2 > a {
+    & h3 > a {
       animation: toggle-vt-names linear both;
       animation-timeline: view();
     }

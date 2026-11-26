@@ -1,0 +1,75 @@
+---
+import FormattedDate from '../components/FormattedDate';
+import FullPlayButton from '../components/FullPlayButton';
+import type { Episode, Show } from '../lib/rss';
+import { dasherize } from '../utils/dasherize';
+import { formatDuration } from '../utils/formatDuration';
+
+export interface Props {
+  episode: Episode;
+  show: Show;
+}
+
+const { episode, show } = Astro.props;
+---
+
+<section aria-labelledby="latest-episode-heading" class="mt-10">
+  <h2 id="latest-episode-heading" class="section-heading mb-4">
+    最新エピソード
+  </h2>
+
+  <article
+    class="border-light-input-border bg-light-input-bg dark:border-dark-input-border dark:bg-dark-input-bg rounded-2xl border p-6 shadow-sm sm:p-8"
+  >
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+      <img
+        alt=""
+        class="block h-auto w-28 shrink-0 rounded-xl shadow-md sm:w-32"
+        height={128}
+        src={episode.episodeThumbnail ?? show.image}
+        width={128}
+      />
+
+      <div class="min-w-0 flex-1 break-words">
+        <p class="flex flex-wrap items-center gap-x-2">
+          <FormattedDate date={new Date(episode.published)} />
+          <span aria-hidden="true" class="section-heading">・</span>
+          <span class="section-heading">{formatDuration(episode.duration)}</span
+          >
+        </p>
+
+        <h3
+          class="text-light-text-heading mt-2 text-2xl leading-snug font-bold lg:text-3xl dark:text-white"
+        >
+          <a
+            href={`/${episode.episodeSlug}`}
+            style={'view-transition-name: vt-' + dasherize(episode.title)}
+          >
+            {episode.episodeNumber}: {episode.title}
+          </a>
+        </h3>
+      </div>
+    </div>
+
+    <p class="mt-6 leading-relaxed">{episode.description}</p>
+
+    <div class="mt-6 flex items-center gap-6 text-sm whitespace-nowrap">
+      <FullPlayButton
+        client:visible
+        episode={{
+          audio: episode.audio,
+          episodeNumber: episode.episodeNumber,
+          id: episode.id,
+          title: episode.title
+        }}
+      />
+
+      <a
+        class="text-light-text-heading font-bold dark:text-white"
+        href={`/${episode.episodeSlug}`}
+      >
+        Show notes
+      </a>
+    </div>
+  </article>
+</section>

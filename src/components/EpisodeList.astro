@@ -4,13 +4,14 @@ import FullPlayButton from '../components/FullPlayButton';
 import UFOIllustration from '../components/illustrations/UFOIllustration.astro';
 import type { Episode, Show } from '../lib/rss';
 import { dasherize } from '../utils/dasherize';
+import { formatDuration } from '../utils/formatDuration';
 
 export interface Props {
   episodes: Array<Episode>;
   show: Show;
 }
 
-const { episodes, show } = Astro.props;
+const { episodes } = Astro.props;
 ---
 
 {
@@ -25,39 +26,45 @@ const { episodes, show } = Astro.props;
       </p>
     </div>
   ) : (
-    <ul aria-label="EpisodeList">
-      {episodes.map((episode) => {
-        return (
-          <li class="dark:border-dark-border border-b">
-            <div class="flex w-full flex-col py-12 lg:flex-row">
-              <img
-                alt={`${episode.title} - episode art`}
-                aria-hidden="true"
-                class="mb-3 block h-20 w-20 rounded-md lg:mr-6"
-                height={80}
-                loading="lazy"
-                src={episode.episodeThumbnail ?? show.image}
-                width={80}
-              />
+    <section aria-labelledby="past-episodes-heading" class="mt-16 mb-12">
+      <h2 id="past-episodes-heading" class="section-heading-underlined">
+        これまでのエピソード
+      </h2>
 
-              <div class="flex flex-col">
-                <FormattedDate date={new Date(episode.published)} />
+      <ul aria-label="EpisodeList">
+        {episodes.map((episode) => {
+          return (
+            <li class="dark:border-dark-border border-b">
+              <div class="flex w-full flex-col gap-4 py-6 sm:flex-row sm:items-center sm:gap-8">
+                <div class="min-w-0 flex-1 break-words">
+                  <p class="flex flex-wrap items-center gap-x-2">
+                    <FormattedDate date={new Date(episode.published)} />
+                    <span aria-hidden="true" class="section-heading">
+                      ・
+                    </span>
+                    <span class="section-heading">
+                      {formatDuration(episode.duration)}
+                    </span>
+                  </p>
 
-                <h2 class="text-light-text-heading my-2 text-lg font-bold dark:text-white">
-                  <a
-                    href={`/${episode.episodeSlug}`}
-                    style={
-                      'view-transition-name: var(--should-vt); --vt-name: vt-' +
-                      dasherize(episode.title)
-                    }
-                  >
-                    {episode.episodeNumber}: {episode.title}
-                  </a>
-                </h2>
+                  <h3 class="text-light-text-heading mt-1 text-base leading-snug font-bold dark:text-white">
+                    <a
+                      href={`/${episode.episodeSlug}`}
+                      style={
+                        'view-transition-name: var(--should-vt); --vt-name: vt-' +
+                        dasherize(episode.title)
+                      }
+                    >
+                      {episode.episodeNumber}: {episode.title}
+                    </a>
+                  </h3>
 
-                <p class="mb-5">{episode.description}</p>
+                  <p class="mt-2 line-clamp-2 text-sm leading-relaxed">
+                    {episode.description}
+                  </p>
+                </div>
 
-                <div class="flex items-center gap-6 text-sm">
+                <div class="shrink-0 text-sm whitespace-nowrap">
                   <FullPlayButton
                     client:visible
                     episode={{
@@ -67,19 +74,12 @@ const { episodes, show } = Astro.props;
                       title: episode.title
                     }}
                   />
-
-                  <a
-                    class="text-light-text-heading font-bold dark:text-white"
-                    href={`/${episode.episodeSlug}`}
-                  >
-                    Show notes
-                  </a>
                 </div>
               </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   )
 }
