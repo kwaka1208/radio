@@ -8,7 +8,6 @@ import MarkdownTranscript from '../components/episode/MarkdownTranscript';
 import RssTranscript from '../components/episode/Transcript';
 import PlayButton from '../components/player/PlayButton';
 import FullPlayButton from '../components/FullPlayButton';
-import UFOIllustration from '../components/illustrations/UFOIllustration.astro';
 import { generateDocumentLinkTag } from '@bryanguffey/astro-standard-site';
 
 import Layout from '../layouts/Layout.astro';
@@ -186,12 +185,16 @@ const documentLinkTag =
           <Fragment set:html={episode.content} />
         </div>
 
-        <h3 class="section-heading-underlined mt-16 mb-8">
-          Episode Transcript
-        </h3>
+        {
+          hasTranscript && (
+            <h3 class="section-heading-underlined mt-16 mb-8">
+              Episode Transcript
+            </h3>
+          )
+        }
 
         {
-          hasTranscript ? (
+          hasTranscript && (
             <div class="mb-20">
               <Schema
                 item={{
@@ -237,16 +240,6 @@ const documentLinkTag =
               >
                 <span class="px-8 py-3">Show more</span>
               </button>
-            </div>
-          ) : (
-            <div class="flex flex-col items-center">
-              <div class="h-auto w-full max-w-80">
-                <UFOIllustration />
-              </div>
-
-              <p class="text-light-text-heading py-10 text-lg font-bold dark:text-white">
-                このエピソードに文字起こしはありません
-              </p>
             </div>
           )
         }
