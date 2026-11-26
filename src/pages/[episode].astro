@@ -8,6 +8,7 @@ import MarkdownTranscript from '../components/episode/MarkdownTranscript';
 import RssTranscript from '../components/episode/Transcript';
 import PlayButton from '../components/player/PlayButton';
 import FullPlayButton from '../components/FullPlayButton';
+import EpisodeNav from '../components/EpisodeNav.astro';
 import { generateDocumentLinkTag } from '@bryanguffey/astro-standard-site';
 
 import Layout from '../layouts/Layout.astro';
@@ -24,11 +25,17 @@ const show = await getShowInfo();
 export async function getStaticPaths() {
   const allEpisodes = await getAllEpisodes();
 
-  return allEpisodes.flatMap((episode) => {
+  // allEpisodes is sorted newest first, so the older ("previous") episode is
+  // the next item in the array and the newer ("next") one is the item before.
+  return allEpisodes.flatMap((episode, index) => {
+    const previousEpisode = allEpisodes[index + 1];
+    const nextEpisode = index > 0 ? allEpisodes[index - 1] : undefined;
+    const props = { episode, previousEpisode, nextEpisode };
+
     const paths = [
       {
         params: { episode: episode.episodeNumber },
-        props: { episode }
+        props
       }
     ];
 
@@ -37,7 +44,7 @@ export async function getStaticPaths() {
     if (episode.episodeSlug !== episode.episodeNumber) {
       paths.push({
         params: { episode: episode.episodeSlug },
-        props: { episode }
+        props
       });
     }
 
@@ -45,7 +52,7 @@ export async function getStaticPaths() {
   });
 }
 
-const { episode } = Astro.props;
+const { episode, previousEpisode, nextEpisode } = Astro.props;
 
 let Transcript;
 let rssTranscript: Array<TranscriptParagraph> | null = null;
@@ -243,6 +250,8 @@ const documentLinkTag =
             </div>
           )
         }
+
+        <EpisodeNav previous={previousEpisode} next={nextEpisode} />
       </div>
     </div>
   </div>
